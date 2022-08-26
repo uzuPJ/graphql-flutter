@@ -57,8 +57,14 @@ abstract class GraphQLSocketMessage extends JsonSerializable {
     final Map<String, dynamic> map =
         json.decode(message as String) as Map<String, dynamic>;
     final String type = (map['type'] ?? 'unknown') as String;
-    final payload =
-        (map['payload'] ?? <String, dynamic>{}) as Map<String, dynamic>;
+    //
+    late Map<String, dynamic> payload;
+    var _payload = map['payload'];
+    if (_payload is List) {
+      payload = {"errors": _payload};
+    } else {
+      payload = (_payload ?? <String, dynamic>{}) as Map<String, dynamic>;
+    }
     final String id = (map['id'] ?? 'none') as String;
 
     switch (type) {
